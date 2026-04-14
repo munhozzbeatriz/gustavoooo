@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>As Escolhas de Rapunzel</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f0e6ff 0%, #d8bfd8 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        #game-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            border: 3px solid #9370db;
+        }
+        h1 { color: #6a0dad; margin-top: 0; }
+        #story-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: #444;
+            min-height: 80px;
+        }
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        button {
+            padding: 15px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            background-color: #9370db;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #7b68ee;
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(147, 112, 219, 0.4);
+        }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <h1>👑 Rapunzel</h1>
+    <div id="story-text">Aguardando início...</div>
+    <div id="options" class="options-container"></div>
+</div>
+
+<script>
+    // Toda a base de dados da história
+    const storyData = {
+        'inicio': {
+            text: "Rapunzel está na torre há 18 anos. Ela vê luzes flutuantes no céu todo ano no seu aniversário. O que ela faz hoje?",
+            options: [
+                { text: "Pedir para a Mamãe Gothel sair", next: 'pedir_sair' },
+                { text: "Tentar descer escondida usando o cabelo", next: 'descer_sozinha' }
+            ]
+        },
+        'pedir_sair': {
+            text: "Mamãe Gothel fica furiosa e diz que o mundo é perigoso. Ela sai para buscar um presente especial. De repente, um ladrão chamado Flynn Rider invade a torre!",
+            options: [
+                { text: "Dar uma paulada nele com a frigideira", next: 'frigideira' },
+                { text: "Se esconder no armário", next: 'esconder' }
+            ]
+        },
+        'descer_sozinha': {
+            text: "Você tenta descer, mas percebe que seu cabelo não chega até o chão! Você fica pendurada no meio do caminho.",
+            options: [
+                { text: "Gritar por socorro", next: 'socorro' },
+                { text: "Tentar subir de volta", next: 'inicio' }
+            ]
+        },
+        'frigideira': {
+            text: "POW! Ele desmaiou. Agora você tem um guia para te levar até as luzes. Você faz um trato com ele?",
+            options: [
+                { text: "Sim, vamos para a aventura!", next: 'vitoria' },
+                { text: "Não, melhor jogar ele pela janela", next: 'derrota' }
+            ]
+        },
+        'vitoria': {
+            text: "VOCÊ CONSEGUIU! Você viu as luzes, descobriu que é a princesa e viveu feliz para sempre. ✨",
+            options: [
+                { text: "Recomeçar", next: 'inicio' }
+            ]
+        },
+        'derrota': {
+            text: "Sem um guia, você se perde na floresta e a Mamãe Gothel te encontra. De volta para a torre... 🏰",
+            options: [
+                { text: "Tentar novamente", next: 'inicio' }
+            ]
+        },
+        'esconder': {
+            text: "Ele rouba sua coroa e vai embora. Você perdeu a chance de sair. Fim.",
+            options: [
+                { text: "Recomeçar", next: 'inicio' }
+            ]
+        },
+        'socorro': {
+            text: "A Mamãe Gothel ouviu e te pegou no flagra! Ela cortou seu cabelo e agora você está de castigo eterno.",
+            options: [
+                { text: "Recomeçar", next: 'inicio' }
+            ]
+        }
+    };
+
+    function carregarCena(idDaCena) {
+        const cena = storyData[idDaCena];
+        const caixaTexto = document.getElementById('story-text');
+        const caixaBotoes = document.getElementById('options');
+
+        // Muda o texto da história
+        caixaTexto.innerText = cena.text;
+
+        // Limpa os botões que estavam lá antes
+        caixaBotoes.innerHTML = '';
+
+        // Cria os novos botões baseados na cena atual
+        cena.options.forEach(opcao => {
+            const botao = document.createElement('button');
+            botao.innerText = opcao.text;
+            botao.onclick = () => carregarCena(opcao.next);
+            caixaBotoes.appendChild(botao);
+        });
+    }
+
+    // Garante que o jogo comece assim que a página abrir
+    window.onload = () => {
+        carregarCena('inicio');
+    };
+</script>
+
+</body>
+</html>
